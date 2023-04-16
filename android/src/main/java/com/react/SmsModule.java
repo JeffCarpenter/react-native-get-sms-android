@@ -161,7 +161,7 @@ public class SmsModule extends ReactContextBaseJavaModule /*implements LoaderMan
     }
 
     @ReactMethod
-    public void send(String addresses, String text, final Callback errorCallback, final Callback successCallback) {
+    public void send(final Integer simId, String addresses, String text, final Callback errorCallback, final Callback successCallback) {
         mActivity = getCurrentActivity();
         try {
             JSONObject jsonObject = new JSONObject(addresses);
@@ -169,7 +169,7 @@ public class SmsModule extends ReactContextBaseJavaModule /*implements LoaderMan
             int n;
             if ((n = addressList.length()) > 0) {
                 PendingIntent sentIntent = PendingIntent.getBroadcast(mActivity, 0, new Intent("SENDING_SMS"), PendingIntent.FLAG_IMMUTABLE);
-                SmsManager sms = SmsManager.getDefault();
+                SmsManager sms = SmsManager.getSmsManagerForSubscriptionId(simId);
                 for (int i = 0; i < n; i++) {
                     String address;
                     if ((address = addressList.optString(i)).length() > 0)
@@ -229,7 +229,7 @@ public class SmsModule extends ReactContextBaseJavaModule /*implements LoaderMan
 
 
     @ReactMethod
-    public void autoSend(String phoneNumber, String message, final Callback errorCallback,
+    public void autoSend(final Integer simId, String phoneNumber, String message, final Callback errorCallback,
                          final Callback successCallback) {
 
         cb_autoSend_succ = successCallback;
@@ -283,7 +283,7 @@ public class SmsModule extends ReactContextBaseJavaModule /*implements LoaderMan
                 }
             }, new IntentFilter(DELIVERED));
 
-            SmsManager sms = SmsManager.getDefault();
+            SmsManager sms = SmsManager.getSmsManagerForSubscriptionId(simId);
             ArrayList<String> parts = sms.divideMessage(message);
 
             for (int i = 0; i < parts.size(); i++) {
