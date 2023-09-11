@@ -30,4 +30,4 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Build app
-        run: eas build --platform android --profile release --non-interactive --auto-submit
+        run: eas build --platform android --non-interactive --auto-submit
